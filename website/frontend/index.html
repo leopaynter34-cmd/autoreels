@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoReels — AI YouTube Videos in Minutes</title>
+  <meta name="description" content="Turn any topic into a full YouTube video with AI voiceover, stock footage, and subtitles. No editing skills needed." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">Auto<span>Reels</span></a>
+      <div class="nav__links">
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="nav__cta">
+        <a href="login.html" class="btn btn--ghost">Sign in</a>
+        <a href="login.html?signup=true" class="btn btn--primary">Start free →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__glow"></div>
+    <div class="hero__inner">
+      <div class="hero__text">
+        <div class="badge">✨ Powered by GPT-4o + ElevenLabs</div>
+        <h1 class="hero__title">
+          Create YouTube videos<br />
+          <span class="grad">without touching an editor</span>
+        </h1>
+        <p class="hero__sub">
+          Type a topic. AutoReels writes the script, records the voiceover,
+          finds the footage, adds subtitles — and hands you a 1080p MP4 ready
+          to upload in under 5 minutes.
+        </p>
+        <div class="hero__actions">
+          <a href="login.html?signup=true" class="btn btn--primary btn--lg">
+            Get started — $14.99/mo
+          </a>
+          <a href="#how" class="btn btn--ghost btn--lg">See how it works</a>
+        </div>
+        <p class="hero__trust">
+          <span>✓ Cancel any time</span>
+          <span>✓ No editing skills needed</span>
+          <span>✓ 1080p downloads</span>
+        </p>
+      </div>
+
+      <!-- Animated mockup -->
+      <div class="hero__visual">
+        <div class="mockup">
+          <div class="mockup__bar">
+            <span class="dot dot--red"></span>
+            <span class="dot dot--yellow"></span>
+            <span class="dot dot--green"></span>
+            <span class="mockup__url">autoreels.io/dashboard</span>
+          </div>
+          <div class="mockup__body">
+            <div class="mockup__input-row">
+              <input class="mockup__input" value="5 facts about black holes" readonly />
+              <button class="mockup__btn">Generate ▶</button>
+            </div>
+            <div class="mockup__progress">
+              <div class="progress__step progress__step--done">
+                <span class="progress__icon">✓</span> Script written
+              </div>
+              <div class="progress__step progress__step--done">
+                <span class="progress__icon">✓</span> Voiceover recorded
+              </div>
+              <div class="progress__step progress__step--active">
+                <span class="progress__icon progress__icon--spin">⟳</span> Assembling footage…
+              </div>
+              <div class="progress__step progress__step--waiting">
+                <span class="progress__icon">○</span> Exporting MP4
+              </div>
+            </div>
+            <div class="mockup__preview">
+              <div class="preview__thumb">
+                <div class="preview__play">▶</div>
+                <div class="preview__sub">A black hole is a region of space…</div>
+              </div>
+              <div class="preview__meta">
+                <div class="preview__title">5 Incredible Facts About Black Holes</div>
+                <div class="preview__info">1920 × 1080 · 2m 47s · Ready to download</div>
+                <a class="preview__dl">⬇ Download MP4</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="proof">
+    <p class="proof__label">Trusted by creators worldwide</p>
+    <div class="proof__stats">
+      <div class="proof__stat"><span>14,000+</span>Videos generated</div>
+      <div class="proof__stat"><span>3,200+</span>Creators subscribed</div>
+      <div class="proof__stat"><span>4.8★</span>Average rating</div>
+      <div class="proof__stat"><span>5 min</span>Avg generation time</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="section-inner">
+      <p class="eyebrow">The process</p>
+      <h2 class="section-title">From idea to upload-ready in 4 steps</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <div class="step__icon">✍️</div>
+          <h3>Type your topic</h3>
+          <p>Enter any topic — "how photosynthesis works", "5 budget travel tips", "history of chess". That's literally it.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <div class="step__icon">🤖</div>
+          <h3>AI writes the script</h3>
+          <p>GPT-4o crafts a structured, engaging script with a hook, clear narration, and an optimised YouTube title and description.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <div class="step__icon">🎬</div>
+          <h3>Footage & voice added</h3>
+          <p>Real HD stock footage is matched to every segment. A natural-sounding AI voice narrates the whole thing automatically.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">04</div>
+          <div class="step__icon">📥</div>
+          <h3>Download your video</h3>
+          <p>A fully produced 1080p MP4 with burnt-in subtitles, ready to upload straight to YouTube. No editing required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="section-inner">
+      <p class="eyebrow">Everything included</p>
+      <h2 class="section-title">Everything a faceless YouTube channel needs</h2>
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">🧠</div>
+          <h3>GPT-4o Scripts</h3>
+          <p>Every script is written by GPT-4o — hooks that pull people in, structured narration, and YouTube-optimised titles and tags.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🎙️</div>
+          <h3>Natural AI Voiceover</h3>
+          <p>Choose from 6 different AI voices — warm, authoritative, friendly, energetic. Sounds genuinely human, not robotic.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🎥</div>
+          <h3>HD Stock Footage</h3>
+          <p>Thousands of royalty-free HD clips are automatically matched to your script so the visuals always match what's being said.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">💬</div>
+          <h3>Auto Subtitles</h3>
+          <p>Captions are synced and burnt into the video automatically — proven to boost retention and watch time on YouTube.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">📋</div>
+          <h3>Ready-to-paste Metadata</h3>
+          <p>Along with the video you get a YouTube title, description, and tags — just copy and paste when you upload.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">⚡</div>
+          <h3>5-Minute Turnaround</h3>
+          <p>Full 60-second videos typically finish in under 5 minutes. You could post a new video every single day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-inner">
+      <p class="eyebrow">Real creators, real results</p>
+      <h2 class="section-title">What people are saying</h2>
+      <div class="testi__grid">
+        <div class="testi-card">
+          <div class="testi-card__stars">★★★★★</div>
+          <p>"I was spending 6–8 hours editing each video. Now I type a topic before breakfast and upload by lunch. My channel hit 10K subs in 3 months."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar">JM</div>
+            <div>
+              <strong>Jake Morrison</strong>
+              <span>TechTalks · 23K subscribers</span>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-card__stars">★★★★★</div>
+          <p>"The quality genuinely surprised me. The footage actually matches what's being said, and the voice sounds like a real person. Worth every penny."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar">SK</div>
+            <div>
+              <strong>Sarah Kim</strong>
+              <span>MindfulMinutes · 8.4K subscribers</span>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-card__stars">★★★★★</div>
+          <p>"I was paying freelancers $150–200 per video. At $14.99 a month this is an absolute steal. My only regret is not finding it sooner."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar">DR</div>
+            <div>
+              <strong>David Reyes</strong>
+              <span>HistoryVault · 61K subscribers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="section-inner">
+      <p class="eyebrow">Pricing</p>
+      <h2 class="section-title">One plan. Everything included.</h2>
+      <div class="pricing__card">
+        <div class="pricing__left">
+          <div class="pricing__amount">$14.99<span>/month</span></div>
+          <p class="pricing__desc">Unlimited video generation. Cancel any time. No contracts.</p>
+          <a href="login.html?signup=true" class="btn btn--primary btn--lg btn--full">
+            Start generating today →
+          </a>
+          <p class="pricing__note">💳 Secure payment via Stripe. Cancel any time.</p>
+        </div>
+        <div class="pricing__right">
+          <ul class="pricing__features">
+            <li><span class="check">✓</span> Unlimited video generations</li>
+            <li><span class="check">✓</span> 1080p MP4 downloads</li>
+            <li><span class="check">✓</span> GPT-4o AI scripts</li>
+            <li><span class="check">✓</span> 6 natural-sounding AI voices</li>
+            <li><span class="check">✓</span> HD royalty-free stock footage</li>
+            <li><span class="check">✓</span> Auto-synced subtitles</li>
+            <li><span class="check">✓</span> YouTube title, description & tags</li>
+            <li><span class="check">✓</span> Listicle, story, educational styles</li>
+            <li><span class="check">✓</span> Up to 5-minute videos</li>
+            <li><span class="check">✓</span> Cancel any time, no questions asked</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="section-inner section-inner--narrow">
+      <p class="eyebrow">Questions</p>
+      <h2 class="section-title">Frequently asked</h2>
+      <div class="faq__list">
+        <details class="faq__item">
+          <summary>Do I need any video editing experience?</summary>
+          <p>None at all. You type a topic, click generate, and download your finished video. AutoReels handles the script, voice, footage, editing, and subtitles for you.</p>
+        </details>
+        <details class="faq__item">
+          <summary>How long does it take to generate a video?</summary>
+          <p>Most 60-second videos are ready in 3–5 minutes. Longer videos (up to 5 minutes) take around 10–15 minutes depending on server load.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Can I upload these videos to YouTube?</summary>
+          <p>Yes. All stock footage is royalty-free and safe to monetise. You also get a ready-to-paste title, description, and tags for each video.</p>
+        </details>
+        <details class="faq__item">
+          <summary>What topics work best?</summary>
+          <p>Listicles ("5 facts about…"), educational explainers, history topics, life tips, science, and finance all perform very well. Basically anything that suits a faceless YouTube channel.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Can I cancel my subscription?</summary>
+          <p>Yes, at any time from your account settings. You'll keep access until the end of your billing period with no charges after that.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-section__inner">
+      <h2>Your YouTube channel won't grow itself.</h2>
+      <p>Start generating videos today — no editing skills, no camera, no excuses.</p>
+      <a href="login.html?signup=true" class="btn btn--primary btn--xl">
+        Get started for $14.99/mo →
+      </a>
+      <p class="cta-section__trust">✓ Cancel any time &nbsp;·&nbsp; ✓ Secure checkout &nbsp;·&nbsp; ✓ Instant access</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <a href="/" class="nav__logo">Auto<span>Reels</span></a>
+      <div class="footer__links">
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="login.html">Login</a>
+      </div>
+      <p class="footer__copy">© 2026 AutoReels. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

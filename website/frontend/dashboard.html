@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoReels — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="dash-layout">
+
+  <!-- Top nav -->
+  <nav class="dash-nav">
+    <div class="dash-nav__logo">Auto<span>Reels</span></div>
+    <div class="dash-nav__right">
+      <span class="dash-nav__email" id="nav-email"></span>
+      <button class="btn btn--ghost btn--sm" onclick="manageSubscription()">Manage plan</button>
+      <button class="btn btn--ghost btn--sm" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <div class="dash-header">
+      <h1>Generate a video</h1>
+      <p>Type your topic and we'll handle the rest.</p>
+    </div>
+
+    <!-- Paywall (shown if not subscribed) -->
+    <div class="subscribe-wall" id="subscribe-wall" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:16px">🎬</div>
+      <h2>Subscribe to start generating</h2>
+      <p>Get unlimited YouTube video generation for just $14.99/month.<br />Cancel any time — no contracts.</p>
+      <button class="btn btn--primary btn--lg" onclick="subscribe()">
+        Subscribe for $14.99/mo →
+      </button>
+      <p style="font-size:.78rem;color:var(--faint);margin-top:12px">
+        Secure payment via Stripe · Cancel any time
+      </p>
+    </div>
+
+    <!-- Generator (shown if subscribed) -->
+    <div class="generate-card" id="generate-card" style="display:none">
+      <h2>🎬 New video</h2>
+      <div class="form-group">
+        <label class="form-label">Topic</label>
+        <input
+          type="text"
+          id="topic-input"
+          class="form-input"
+          placeholder='e.g. "5 facts about the ocean" or "how gravity works"'
+          maxlength="200"
+        />
+      </div>
+      <div class="generate-options">
+        <div class="form-group" style="flex:1;min-width:140px">
+          <label class="form-label">Style</label>
+          <select id="style-select" class="form-select">
+            <option value="informative">Informative</option>
+            <option value="listicle">Listicle (Top 5…)</option>
+            <option value="educational">Educational</option>
+            <option value="storytelling">Storytelling</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:1;min-width:140px">
+          <label class="form-label">Voice</label>
+          <select id="voice-select" class="form-select">
+            <option value="alloy">Alloy (Neutral)</option>
+            <option value="nova">Nova (Warm female)</option>
+            <option value="onyx">Onyx (Deep male)</option>
+            <option value="echo">Echo (Male)</option>
+            <option value="shimmer">Shimmer (Soft female)</option>
+            <option value="fable">Fable (Storyteller)</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:1;min-width:140px">
+          <label class="form-label">Length</label>
+          <select id="duration-select" class="form-select">
+            <option value="45">~45 seconds</option>
+            <option value="60" selected>~60 seconds</option>
+            <option value="90">~90 seconds</option>
+            <option value="120">~2 minutes</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <button class="btn btn--primary btn--lg" onclick="generateVideo()" id="generate-btn">
+          Generate video →
+        </button>
+      </div>
+    </div>
+
+    <!-- Generation progress -->
+    <div class="status-banner" id="status-banner">
+      <div class="status-banner__spinner"></div>
+      <div class="status-banner__text" id="status-text">Generating your video…</div>
+    </div>
+
+    <!-- Video history -->
+    <div class="videos-section">
+      <h2>Your videos</h2>
+      <div class="video-list" id="video-list">
+        <div class="empty-state">No videos yet — generate your first one above!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = '';
+  let pollInterval = null;
+  let currentVideoId = null;
+
+  // ── Auth check ──────────────────────────────────────────────
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = 'login.html';
+
+  const headers = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  });
+
+  // ── Init ────────────────────────────────────────────────────
+  async function init() {
+    // Set email
+    document.getElementById('nav-email').textContent = localStorage.getItem('email') || '';
+
+    // Check subscription status
+    try {
+      const res  = await fetch(`${API}/api/auth/me`, { headers: headers() });
+      if (!res.ok) return logout();
+      const user = await res.json();
+
+      if (user.is_subscribed) {
+        document.getElementById('generate-card').style.display = 'block';
+        document.getElementById('subscribe-wall').style.display = 'none';
+      } else {
+        document.getElementById('subscribe-wall').style.display = 'block';
+        document.getElementById('generate-card').style.display  = 'none';
+      }
+
+      // Check if coming back from Stripe success
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('subscribed') === 'true' && user.is_subscribed) {
+        showNotif('🎉 Subscription activated! Start generating your first video.');
+        window.history.replaceState({}, '', 'dashboard.html');
+      }
+    } catch { logout(); }
+
+    loadVideos();
+  }
+
+  // ── Generate video ──────────────────────────────────────────
+  async function generateVideo() {
+    const topic = document.getElementById('topic-input').value.trim();
+    if (!topic) {
+      document.getElementById('topic-input').focus();
+      return;
+    }
+
+    const btn = document.getElementById('generate-btn');
+    btn.disabled = true;
+    btn.textContent = 'Starting…';
+
+    try {
+      const res = await fetch(`${API}/api/videos/generate`, {
+        method: 'POST',
+        headers: headers(),
+        body: JSON.stringify({
+          topic,
+          style:    document.getElementById('style-select').value,
+          voice:    document.getElementById('voice-select').value,
+          duration: parseInt(document.getElementById('duration-select').value),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Failed to start generation');
+
+      currentVideoId = data.video_id;
+      document.getElementById('topic-input').value = '';
+      startPolling(currentVideoId);
+      loadVideos();
+    } catch (e) {
+      showNotif('Error: ' + e.message, true);
+      btn.disabled = false;
+      btn.textContent = 'Generate video →';
+    }
+  }
+
+  // ── Poll generation status ──────────────────────────────────
+  function startPolling(videoId) {
+    const banner   = document.getElementById('status-banner');
+    const statusTx = document.getElementById('status-text');
+
+    banner.classList.add('visible');
+    statusTx.textContent = 'Writing script…';
+
+    let steps = ['Writing script…', 'Recording voiceover…', 'Finding stock footage…', 'Assembling your video…'];
+    let stepIdx = 0;
+
+    if (pollInterval) clearInterval(pollInterval);
+
+    pollInterval = setInterval(async () => {
+      try {
+        const res  = await fetch(`${API}/api/videos/${videoId}/status`, { headers: headers() });
+        const data = await res.json();
+
+        // Cycle through steps for a live feel
+        stepIdx = (stepIdx + 1) % steps.length;
+        statusTx.textContent = steps[Math.min(stepIdx, steps.length - 1)];
+
+        if (data.status === 'done') {
+          clearInterval(pollInterval);
+          banner.classList.remove('visible');
+          document.getElementById('generate-btn').disabled = false;
+          document.getElementById('generate-btn').textContent = 'Generate video →';
+          showNotif(`✅ "${data.title}" is ready to download!`);
+          loadVideos();
+        } else if (data.status === 'error') {
+          clearInterval(pollInterval);
+          banner.classList.remove('visible');
+          document.getElementById('generate-btn').disabled = false;
+          document.getElementById('generate-btn').textContent = 'Generate video →';
+          showNotif('Generation failed: ' + (data.error || 'Unknown error'), true);
+          loadVideos();
+        }
+      } catch { /* keep polling */ }
+    }, 4000);
+  }
+
+  // ── Load video list ─────────────────────────────────────────
+  async function loadVideos() {
+    try {
+      const res    = await fetch(`${API}/api/videos`, { headers: headers() });
+      const videos = await res.json();
+      renderVideos(videos);
+    } catch { /* silent */ }
+  }
+
+  function renderVideos(videos) {
+    const list = document.getElementById('video-list');
+    if (!videos || videos.length === 0) {
+      list.innerHTML = '<div class="empty-state">No videos yet — generate your first one above!</div>';
+      return;
+    }
+
+    list.innerHTML = videos.map(v => `
+      <div class="video-item">
+        <div class="video-item__icon">🎬</div>
+        <div class="video-item__info">
+          <div class="video-item__title">${v.title || v.topic}</div>
+          <div class="video-item__meta">${formatDate(v.created_at)}</div>
+        </div>
+        <span class="video-item__status status--${v.status}">
+          ${statusLabel(v.status)}
+        </span>
+        <div class="video-item__actions">
+          ${v.status === 'done' && v.has_file
+            ? `<a href="/api/videos/${v.id}/download" class="btn btn--primary btn--sm">⬇ Download</a>`
+            : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function statusLabel(s) {
+    return { done: '✓ Ready', generating: '⟳ Generating', pending: '○ Queued', error: '✕ Error' }[s] || s;
+  }
+  function formatDate(iso) {
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  // ── Billing ─────────────────────────────────────────────────
+  async function subscribe() {
+    try {
+      const res  = await fetch(`${API}/api/billing/create-checkout`, { method: 'POST', headers: headers() });
+      const data = await res.json();
+      if (data.checkout_url) window.location.href = data.checkout_url;
+      else showNotif('Billing not configured yet.', true);
+    } catch { showNotif('Error connecting to billing.', true); }
+  }
+
+  async function manageSubscription() {
+    try {
+      const res  = await fetch(`${API}/api/billing/portal`, { method: 'POST', headers: headers() });
+      const data = await res.json();
+      if (data.portal_url) window.location.href = data.portal_url;
+      else showNotif('No billing account found.', true);
+    } catch { showNotif('Error.', true); }
+  }
+
+  // ── Utility ─────────────────────────────────────────────────
+  function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  function showNotif(msg, isError = false) {
+    const n = document.createElement('div');
+    n.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:999;background:${isError ? '#7F1D1D' : '#14532D'};color:${isError ? '#FCA5A5' : '#86EFAC'};border:1px solid ${isError ? 'rgba(239,68,68,.3)' : 'rgba(34,197,94,.25)'};padding:14px 20px;border-radius:10px;font-size:.9rem;font-weight:500;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,.4);`;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 5000);
+  }
+
+  init();
+</script>
+</body>
+</html>

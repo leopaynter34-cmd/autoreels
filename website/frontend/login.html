@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoReels — Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">Auto<span>Reels</span></div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign in</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</div>
+    </div>
+
+    <div id="form-error" class="form-error"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="login-email" class="form-input" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••" />
+      </div>
+      <button class="btn btn--primary btn--full" onclick="handleLogin()" id="login-btn">
+        Sign in →
+      </button>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" id="signup-email" class="form-input" placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="signup-password" class="form-input" placeholder="At least 6 characters" />
+      </div>
+      <button class="btn btn--primary btn--full" onclick="handleSignup()" id="signup-btn">
+        Create account →
+      </button>
+      <p style="text-align:center;font-size:.8rem;color:var(--faint);margin-top:14px;">
+        You'll subscribe after creating your account.
+      </p>
+    </div>
+
+    <p style="text-align:center;margin-top:20px;font-size:.82rem;color:var(--faint);">
+      <a href="/" style="color:var(--muted)">← Back to home</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  const API = '';
+
+  // Auto switch tab based on URL param
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('signup') === 'true') switchTab('signup');
+
+  function switchTab(tab) {
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+    document.getElementById('login-form').style.display  = tab === 'login'  ? 'block' : 'none';
+    document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+    hideError();
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('form-error');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+  function hideError() {
+    document.getElementById('form-error').classList.remove('visible');
+  }
+
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = loading;
+    btn.textContent = loading ? 'Please wait…' : (btnId === 'login-btn' ? 'Sign in →' : 'Create account →');
+  }
+
+  async function handleLogin() {
+    hideError();
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) return showError('Please fill in all fields.');
+
+    setLoading('login-btn', true);
+    try {
+      const res = await fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) return showError(data.detail || 'Login failed.');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('email', data.email);
+      window.location.href = 'dashboard.html';
+    } catch {
+      showError('Connection error. Please try again.');
+    } finally {
+      setLoading('login-btn', false);
+    }
+  }
+
+  async function handleSignup() {
+    hideError();
+    const email    = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    if (!email || !password) return showError('Please fill in all fields.');
+    if (password.length < 6) return showError('Password must be at least 6 characters.');
+
+    setLoading('signup-btn', true);
+    try {
+      const res = await fetch(`${API}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) return showError(data.detail || 'Registration failed.');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('email', data.email);
+      window.location.href = 'dashboard.html';
+    } catch {
+      showError('Connection error. Please try again.');
+    } finally {
+      setLoading('signup-btn', false);
+    }
+  }
+
+  // Allow Enter key to submit
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const tab = document.getElementById('tab-login').classList.contains('active');
+      tab ? handleLogin() : handleSignup();
+    }
+  });
+</script>
+</body>
+</html>
