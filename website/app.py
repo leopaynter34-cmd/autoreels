@@ -82,7 +82,7 @@ class Video(Base):
 Base.metadata.create_all(bind=engine)
 
 # ── Auth helpers ─────────────────────────────────────────────
-pwd_ctx  = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_ctx  = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
 security = HTTPBearer(auto_error=False)
 
 
